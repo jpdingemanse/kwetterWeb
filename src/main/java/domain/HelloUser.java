@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.NamedStoredProcedureQuery;
@@ -39,11 +42,12 @@ import service.TweetService;
     @NamedQuery(name = "HelloUser.findByName", query = "SELECT u FROM HelloUser u WHERE u.userName = :name"),
     @NamedQuery(name = "HelloUser.findByEmail", query = "SELECT u FROM HelloUser u WHERE u.email = :email"),
     @NamedQuery(name = "HelloUser.findById", query = "SELECT u from HelloUser u where u.id = :id"),
-
+   
         }) 
-@NamedStoredProcedureQuery(name="gettimeline", procedureName="EMP_READ_ALL", resultClasses=Tweet.class, parameters={
-    //@StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = ":id")
-})
+//@NamedStoredProcedureQuery(name="newtimeline", procedureName="EMP_READ_ALL", resultClasses=Tweet.class, parameters={
+//    @StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, type = void.class), 
+//    @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = ":followinguserid")
+//})
 @Table(name = "HelloUser")
 public class HelloUser {
     @Id
@@ -56,7 +60,9 @@ public class HelloUser {
     private String email;    
     private String location;
     private String website;
-    private Role role; 
+    private Role role;
+    private String profilePic; 
+     private HelloUser user = this; 
     
     @ManyToMany(mappedBy = "users")
     private List<Group> groups;
@@ -64,7 +70,11 @@ public class HelloUser {
     @OneToMany (mappedBy = "user")
     private List<Tweet> tweets;
     @ManyToMany
-    private List<HelloUser> following;   
+    private List<HelloUser> following; 
+    
+    
+   private List<Follower> followers;
+  
  
     
     public HelloUser(){
@@ -75,12 +85,14 @@ public class HelloUser {
         this.password = password;
         tweets = new ArrayList<>();
         following = new ArrayList<>();
+       followers = new ArrayList<>();
+        
         
 
     }
     
     
-    public HelloUser(String name, String password, String bio, String email, String location, String website, Role role) {
+    public HelloUser(String name, String password, String bio, String email, String location, String website, Role role, String profilepic) {
         this.userName = name;
         this.password = password;
         this.bio = bio;
@@ -88,14 +100,28 @@ public class HelloUser {
         this.location = location;
         this.website = website;
         this.role = role;
+        this.profilePic = profilepic;
         tweets = new ArrayList<>();
         following = new ArrayList<>();
+        followers = new ArrayList<>();
     }
     
     public Boolean addFollowing(HelloUser user){
         try {
             if(!this.following.contains(user)){
             this.following.add(user);
+            return true;
+        }
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
+    
+    public Boolean addFollower(Follower follower){
+        try {
+            if(!this.followers.contains(follower)){
+            this.followers.add(follower);
             return true;
         }
         } catch (Exception ex){
@@ -112,9 +138,16 @@ public class HelloUser {
         this.id = id;
     }
     
-    public void addTweet(Tweet tweet){
-        tweets.add(tweet);
-        tweet.setTweeter(this);
+    public Boolean addTweet(Tweet tweet){
+        try {
+            tweet.setTweeter(this);
+            this.tweets.add(tweet);
+            return true;
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return false;
+       
     }
     
     public List<Tweet> getTweets() {
@@ -189,4 +222,46 @@ public class HelloUser {
     public Role getRole() {
         return role;
     }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public HelloUser getUser() {
+        return user;
+    }
+
+    public void setUser(HelloUser user) {
+        this.user = user;
+    }
+
+    public List<Follower> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<Follower> followers) {
+        this.followers = followers;
+    }
+    
+    
 }

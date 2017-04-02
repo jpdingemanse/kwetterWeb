@@ -2,31 +2,110 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Profile</title>
     </h:head>
     <h:body>
-        Hello from Facelets
+    
+          <p:layoutUnit position="north"  >
+                      <p:panel>
+                       <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{userBean.setSelectedUser().name}
+                    <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
+                </h:outputLink>
+                  
+                  
+                       <p:commandButton value="Home" action="faces/timeline.xhtml"  style="width: 200px;"/> 
+                    
+                        <p:commandButton value="Profile" action="#{userBean.profilePage()}" style="width: 200px;">
+                            <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
+                        </p:commandButton>
+                       <p:commandButton value="Logout" action="faces/logout.xhtml" style="width: 200px;">
+                            
+                        </p:commandButton>
+                    </p:panel>
+<!--              <h:panelGroup id="doBtnPG">
+                <p:commandButton value="Edit profile" rendered="#{editBean.showEdit}" 
+                    action="#{editBean.replaceFields()}" update="doBtnPG"/>
+    
+</h:panelGroup>-->
+              
+ </p:layoutUnit>
+
+    <f:metadata>
+        <f:viewParam name="usernameprofile" value="#{userBean.usernameProfile}" required="false"/>
+        <!--<f:viewParam name="usernameprofile" value="##{editBean.usernameProfile}" required="false"/>-->
+        <f:event type="preRenderComponent" listener="#{userBean.loadUserForProfile()}"/>
+        <!--<f:event type="preRenderComponent" listener="#{editBean.loadUserForProfile()}"/>-->
+    </f:metadata>
         <br />
-        <h:link outcome="welcomePrimefaces" value="Primefaces welcome page" />
-        Welkomboodschap: #{userBean.setSelectedUser()}
-        <br />
-        <h:form> 
-        <p:commandButton value="vul lijst" actionListener="#{userBean.fillList()}" ajax="false"></p:commandButton>
-        <p:commandButton value="clear lijst" actionListener="#{userBean.clearList()}" ajax="false"></p:commandButton>
+            <p:button  value="Timeline" href="index.xhtml" />
         
-        <p:dataTable var="user" value="#{userBean.users}">
-            <p:column headerText="Naam">
-                <h:outputText value="#{user.name}" />
+        <p:panel header="Profile" style="width: 400px;"> 
+            <p:panelGrid columns="2">
+            <f:facet name="header">
+                <p:graphicImage style="max-height: 300px; max-width: 300px; " name="images/#{userBean.userProfile.profilePic}" />
+            </f:facet>
+
+            <h:outputText value="Name: " />
+            <h:outputText value="#{userBean.userProfile.name}" />
+
+            <h:outputText value="Bio: " />
+            <h:outputText value="#{userBean.userProfile.bio}" />
+
+            <h:outputText value="Email: " />
+            <h:outputText value="#{userBean.userProfile.email}" />
+
+            <h:outputText value="Followers" />
+            <h:outputText value="#{userBean.userProfile.followers.size()}" />
+
+            <h:outputText value="Following" />
+            <h:outputText value="#{userBean.userProfile.following.size()}" />
+        </p:panelGrid>
+        </p:panel>
+            
+        <p:spacer height="30px;"/>
+        
+      <p:outputLabel value="Eigen Tweets"></p:outputLabel>
+        <h:form> 
+            <p:dataTable var="tweet" value="#{userBean.userProfile.tweets}">
+            <p:column headerText="Tweet">
+                <h:outputText value="#{tweet.message}" />
             </p:column>
-                <p:column headerText="Wachtwoord">
-                    <h:outputText value="#{user.password}" />
+                <p:column headerText="Tijd">
+                    <h:outputText value="#{tweet.time}" />
+                </p:column>
+                  <p:column headerText="Tweeter">
+                      <h:outputText value="#{tweet.tweeter.name}" />
+                </p:column>
+            
+        </p:dataTable>
+            <p:spacer height="30px;"/>
+            <p:outputLabel value="Following"></p:outputLabel>
+        <p:dataTable var="following" value="#{userBean.userProfile.following}">
+            <p:column headerText="Tweeter">
+                <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{following.name}
+                    <f:param name="usernameprofile" value="#{following.name}"/>
+                </h:outputLink>
+            </p:column>
+                <p:column headerText="Email">
+                    <h:outputText value="#{following.email}" />
                 </p:column>
             
         </p:dataTable>
         </h:form>
 
     </h:body>
+    <script type="text/javascript">
+      function toggle(id) {
+        var element = document.getElementById(id);
+        if(element.style.display == 'block') {
+          element.style.display = 'none';
+        } else {
+          element.style.display = 'block'
+        }
+      }
+    </script>
 </html>
 

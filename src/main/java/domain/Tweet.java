@@ -26,6 +26,7 @@ import javax.persistence.NamedQuery;
     @NamedQuery(name = "Tweet.all", query = "SELECT t FROM Tweet t"),
     @NamedQuery(name = "Tweet.findById", query = "SELECT t FROM Tweet t WHERE t.id = :id"),
     @NamedQuery(name = "Tweet.LoadTweetsUser", query = "SELECT t FROM Tweet t WHERE t.user.id = :id"),
+   // @NamedQuery(name = "Tweet.TimelineTweets", query = "select t from tweet t LEFT join hellouser_hellouser h on t.user_id = h.following_ID LEFT join hellouser u on u.ID = h.HelloUser_ID where u.id = :userid")
 })
 public class Tweet implements Serializable{
 
@@ -108,5 +109,11 @@ public class Tweet implements Serializable{
      public void setTweeter(HelloUser user) {
          this.user= user;
     }
+
+    @Override
+    public String toString() {
+        return "Tweet{" + "id=" + id + ", user=" + user + ", message=" + message + ", time=" + time + '}';
+    }
+     
 }
 

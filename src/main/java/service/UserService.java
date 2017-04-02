@@ -46,8 +46,12 @@ public class UserService {
         return cd.Create(user);
     }
 
-    public List<Tweet> getTimelineTweets(String userid) {
-        return cd.getTimelineTweets(userid);
+//    public List<Tweet> getTimelineTweets(String userid) {
+//        return cd.getTimelineTweets(userid);
+//    }
+
+    public void addTweet(HelloUser user, Tweet tweet) {
+        cd.addTweet(user, tweet);
     }
 
     

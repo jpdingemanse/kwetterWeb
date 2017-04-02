@@ -55,11 +55,20 @@ public class Init {
     
     @PostConstruct
     public void init(){
-        HelloUser user1 = new HelloUser("jp", stringToHash("jp"));//"test");
-        HelloUser user2= new HelloUser("user", stringToHash("user"));   
-
+       //List<HelloUser> users =  ud.FindAll();
+       //for (HelloUser user : users){
+           //user.setTweets(td.LoadTweetsUser(user.getId().toString()));
+           //user.setFollowing(ud.getFollowing(user.getId().toString()));
+       //}
+       
+        HelloUser user1 = new HelloUser("jp", stringToHash("jp"), "bio", "email@jp.nl", "Tilburg", "www.jp.nl", null, "pp.jpg");
+        
+        HelloUser user2= new HelloUser("Juul", stringToHash("juul"), "bio", "email@juul.nl", "Tilly", "www.juul.nl", null, "d89ff7d1_IMG_6470.JPG.jpg");
+        HelloUser user3 = new HelloUser("Mark", stringToHash("mark"), "bio mark", "email@mark.nl", "Eindje", "www.mark.nl", null, "MENS-EN-LEVEN_009_CROP.jpg");
+        
         ud.Create(user1);
         ud.Create(user2);
+        ud.Create(user3);
         Role role = new Role("Regular");
         Role role1 = new Role("Admin");
         rd.Create(role);
@@ -72,6 +81,7 @@ public class Init {
         
         List<HelloUser> userList = new ArrayList<>();
         userList.add(user1);
+         userList.add(user3);
         role1.setUser_role(userList);
         
         List<HelloUser> UserList1 = new ArrayList<>();
@@ -83,12 +93,28 @@ public class Init {
         
         ud.addFollowing(1, 2);
         ud.addFollowing(2, 1);
+        ud.addFollowing(2, 3);
+         ud.addFollowing(1, 3);
+         ud.addFollowing(3, 1);
+         ud.addFollowing(3, 2);
+         
+         ud.addFollowers(1, 2);
+        ud.addFollowers(2, 1);
+//        ud.addFollowers(2, 3);
+//         ud.addFollowers(1, 3);
+//         ud.addFollowers(3, 1);
+//         ud.addFollowers(3, 2);
         
-        Tweet t1 = new Tweet("tweet", new Date(11, 2, 2), user1);
+        Tweet t1 = new Tweet("tweet", new Date(), user1);
         td.Create(t1);
-        Tweet t2 = new Tweet("tweet twee", new Date(11, 2, 2), user2);
+        Tweet t2 = new Tweet("tweet twee", new Date(), user2);
         td.Create(t2);
+        Tweet t3 = new Tweet("tweet drie", new Date(), user3);
+        td.Create(t3);
         
+        user1.addTweet(t1);
+        user2.addTweet(t2);
+        user3.addTweet(t3);
     
     }
 

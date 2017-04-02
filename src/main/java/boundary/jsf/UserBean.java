@@ -5,17 +5,25 @@
  */
 package boundary.jsf;
 
+import domain.Follower;
 import domain.Tweet;
 import domain.HelloUser;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.ManagedBean;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
+import service.TweetService;
 import service.UserService;
 
 /**
@@ -25,39 +33,87 @@ import service.UserService;
 @Named
 @SessionScoped
 public class UserBean implements Serializable {
-    private String welcome = "hi User";
-    private List<HelloUser> users = new ArrayList<>();
-    private List<Tweet> timelineTweets = new ArrayList<>();
+
+    private HelloUser user = new HelloUser();
+    private String usernameProfile;
+    private HelloUser userProfile = new HelloUser();
     
+    private String editUsername;
+    private String editBio;
+    private String editEmail;
+    private List<Follower> followers;
+   
+    private List<Tweet> timelineTweets = new ArrayList<>();
+    private List<Tweet> searchResult = new ArrayList<>();
+    @Inject
+    private TweetService tweetService;
     @Inject
     private UserService userService;
+    
+    private boolean showEdit;
+    
+    
     
     public UserBean(){
         
     }
-   
-    public String getWelcome() {
-        return welcome;
+
+    
+
+    public List<Follower> getFollowers() {
+        followers = user.getFollowers();
+        return followers;
     }
 
-    public void setWelcome(String welcome) {
-        this.welcome = welcome;
+    public void setFollowers(List<Follower> followers) {
+        this.followers = followers;
     }
 
-    public List<HelloUser> getUsers() {
-        return users;
+    public List<Tweet> getSearchResult() {
+        return searchResult;
     }
 
-    public void setUsers(List<HelloUser> users) {
-        this.users = users;
+    public void setSearchResult(List<Tweet> searchResult) {
+        this.searchResult = searchResult;
+    }
+
+    public TweetService getTweetService() {
+        return tweetService;
+    }
+
+    public void setTweetService(TweetService tweetService) {
+        this.tweetService = tweetService;
+    }
+    
+
+    public HelloUser getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(HelloUser userProfile) {
+        this.userProfile = userProfile;
+    }
+
+     public String getUsernameProfile() {
+        return usernameProfile;
+    }
+
+    public void setUsernameProfile(String usernameProfile) {
+        
+        this.usernameProfile = usernameProfile;
+    }
+    public HelloUser getUser() {
+        return user;
+    }
+
+    public void setUser(HelloUser user) {
+        this.user = user;
     }
 
     public List<Tweet> getTimelineTweets() {
-        return timelineTweets;
-    }
 
-    public void setTimelineTweets(List<Tweet> timelineTweets) {
-        this.timelineTweets = timelineTweets;
+        setTimelineTweets();
+        return timelineTweets;
     }
 
     public UserService getUserService() {
@@ -67,20 +123,53 @@ public class UserBean implements Serializable {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
-    
-    
-    public String fillList(){
-        this.users.addAll(userService.allUsers());
-        return "";
+
+    public String getEditUsername() {
+        return editUsername;
+    }
+
+    public void setEditUsername(String editUsername) {
+        this.editUsername = editUsername;
+    }
+
+    public String getEditBio() {
+        return editBio;
+    }
+
+    public void setEditBio(String editBio) {
+        this.editBio = editBio;
+    }
+
+    public String getEditEmail() {
+        return editEmail;
+    }
+
+    public void setEditEmail(String editEmail) {
+        this.editEmail = editEmail;
     }
     
-    public String clearList(){
-        this.users.clear();
-        return "";
+    
+
+    public List<Tweet> setSearchResultToTimeline(List<Tweet> searchResult){
+        timelineTweets.clear();
+        timelineTweets = searchResult;
+        return timelineTweets;
     }
     
-    public void getTimeline(){
-        timelineTweets = userService.getTimelineTweets(setSelectedUser().getId().toString());
+    public List<Tweet> setTimelineTweets(){
+        timelineTweets.clear();
+        setSelectedUser();
+        List<HelloUser> allUsersTimeline = new ArrayList<HelloUser>();
+        allUsersTimeline = user.getFollowing();
+        allUsersTimeline.add(user);
+        for (HelloUser u : allUsersTimeline){    
+            List<Tweet> tweets = u.getTweets();
+            for (Tweet t : tweets){
+                timelineTweets.add(t);
+            }
+        }
+        return timelineTweets;
+        //timelineTweets = userService.getTimelineTweets(setSelectedUser().getId().toString());
 //        try {
 //            this.users.clear();
 //            this.users.addAll(userService.allUsers());
@@ -100,25 +189,66 @@ public class UserBean implements Serializable {
 //        return null;
     }
     
-    public String refreshTimeline(){
-        this.timelineTweets.clear();
-        getTimeline();
-        return "";
-    }
-    
+//    public String refreshTimeline(){
+//        this.timelineTweets.clear();
+//        setTimelineTweets();
+//        return "";
+//    }
+//    
     /**
      * @return the selectedUser
      */
     public HelloUser setSelectedUser() {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String username = request.getRemoteUser();
-        System.err.println(username);
-
-        HelloUser t = null;
         if (username != null) {
-            t = userService.UserByName(username);
+            user = userService.UserByName(username);
         }
-        return t;
+       
+        return user;
     }
+    
+    public HelloUser loadUserForProfile(){
+        if (this.usernameProfile != null) {
+            userProfile = userService.UserByName(usernameProfile);
+        }
+        else {
+            System.out.println("Username is empty");
+        }
+       
+        return userProfile;
+    }
+    
+    public void newTweet(String message){
+        Tweet tweet = new Tweet(message, new Date(), user);
+        userService.addTweet(user, tweet);
+        setTimelineTweets();
+        
+    }
+    
+    
+    
+    
+ public List<Tweet> search(String message){
+        searchResult = tweetService.allTweets();
+        List<Tweet> templist = new ArrayList<>();
+        for (Tweet t : searchResult){
+            if (t.getMessage().contains(message)){
+                templist.add(t);
+            }          
+        }
+        setSearchResultToTimeline(templist);
+        
+        return templist;
+    }
+ 
+public String logout() {
+    ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
+     return "login.xhtml";
+}
+
+public String profilePage(){
+    return "faces/profile.xhtml";
+}
     
 }

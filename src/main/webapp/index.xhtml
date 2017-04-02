@@ -2,43 +2,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Timeline</title>
     </h:head>
     <h:body>
-        Hello from Facelets
-        <br />
-        <h:link outcome="welcomePrimefaces" value="Primefaces welcome page" />
-        Welkomboodschap: #{userBean.setSelectedUser().name}
-        <br />
+        Huidige gebruiker 
+        <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{userBean.setSelectedUser().name}
+                    <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
+                </h:outputLink>
         <h:form> 
-        <p:commandButton value="vul lijst" actionListener="#{userBean.fillList()}" ajax="false"></p:commandButton>
-        <p:commandButton value="clear lijst" actionListener="#{userBean.clearList()}" ajax="false"></p:commandButton>
-        
-        <p:dataTable var="user" value="#{userBean.users}">
-            <p:column headerText="Naam">
-                <h:outputText value="#{user.name}" />
-            </p:column>
-                <p:column headerText="Wachtwoord">
-                    <h:outputText value="#{user.password}" />
-                </p:column>
             
-        </p:dataTable>
-        </h:form>
-        
-           <h:form> 
-        <p:commandButton value="vul timeline" actionListener="#{userBean.getTimeline()}" ajax="false"></p:commandButton>
-        <!--<p:commandButton value="clear lijst" actionListener="#{userBean.clearList()}" ajax="false"></p:commandButton>-->
-        
-        <p:dataTable var="tweet" value="#{userBean.timelineTweets}">
+            <br></br>
+            <h:inputText binding="#{newtweet}" value = "What is happening?" />
+            <h:commandButton value="Tweet" action="#{userBean.newTweet(newtweet.value)}" />
+             <br></br>
+             <h:inputText binding="#{search}" value = "Search" />
+             <h:commandButton value="Search" action="#{userBean.search(search.value)}" />
+             <br></br>
+             
+             TIMELINE
+         <p:dataTable var="tweets" value="#{userBean.timelineTweets}">
             <p:column headerText="Tweet">
-                <h:outputText value="#{tweet.message}" />
+                <h:outputText value="#{tweets.message}" />
             </p:column>
-                <p:column headerText="tijd">
-                    <h:outputText value="#{tweet.time}" />
+                <p:column headerText="Time">
+                    <h:outputText value="#{tweets.time}" />
                 </p:column>
-            
+            <p:column headerText="Tweeter">
+                <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{tweets.tweeter.name}
+                    <f:param name="usernameProfile" value="#{tweets.tweeter.name}"/>
+                </h:outputLink>
+            </p:column>
         </p:dataTable>
         </h:form>
 

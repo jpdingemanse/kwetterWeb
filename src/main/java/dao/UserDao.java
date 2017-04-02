@@ -5,6 +5,7 @@
  */
 package dao;
 
+import domain.Follower;
 import domain.Role;
 import domain.Tweet;
 import domain.HelloUser;
@@ -54,6 +55,9 @@ public class UserDao {
     public List<HelloUser> FindAll() {
         return em.createNamedQuery("HelloUser.all").getResultList();
     }
+//    public List<HelloUser> FindAllFollowing() {
+//        return em.createNamedQuery("HelloUser.allFollowing").getResultList();
+//    }
 
     
     public void Remove(HelloUser user) {
@@ -99,6 +103,38 @@ public class UserDao {
             return false;
         }
     }
+    
+    public Boolean addFollowers(int followedId, int followingId) {
+    try {
+            Follower follower = new Follower(followedId, followingId);
+            HelloUser user = FindById(new Long(followedId));
+            boolean check = user.addFollower(follower);
+            if(check){
+                em.merge(user);
+                return true;
+            }
+            return false;
+            
+        }
+        catch(Exception e) {
+            return false;
+        }
+    }
+    
+    public Boolean addTweet(HelloUser user, Tweet tweet) {
+    try {
+            boolean check = user.addTweet(tweet);
+            if(check){
+                em.merge(tweet);
+                return true;
+            }
+            return false;
+            
+        }
+        catch(Exception e) {
+            return false;
+        }
+    }
 
     private HelloUser getProfileById(int id) {
         try{
@@ -120,12 +156,15 @@ public class UserDao {
         }
     }
     
-    public List<Tweet> getTimelineTweets(String userid){
-        StoredProcedureQuery query = this.em.createStoredProcedureQuery("gettimeline", Tweet.class);
-        query.registerStoredProcedureParameter(1, void.class, ParameterMode.REF_CURSOR);
-        //query.setParameter("id", userid);
-        query.execute();
-        return (List<Tweet>) query.getParameterValue("result");
-    }
+//    public List<Tweet> getTimelineTweets(String userid){
+//        return (List<Tweet>) em.createNamedQuery("Tweet.TimelineTweets").setParameter("userid", userid).getSingleResult();
+//        
+////        StoredProcedureQuery query = this.em.createStoredProcedureQuery("newtimeline", Tweet.class);
+////        //query.registerStoredProcedureParameter(2, String.class, ParameterMode.REF_CURSOR);
+////        //query.setParameter("followinguserid", userid);
+////        query.setParameter("followinguserid", userid);
+////       // query.execute();
+////        return (List<Tweet>) query.getResultList();
+//    }
 
 }

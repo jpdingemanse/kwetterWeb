@@ -1,0 +1,10 @@
+<div class="mytext">
+    <p>Hello #{userSession.username}, </p>
+    <p><h:outputText value="It doesn't seem you're logged in anyway..." rendered="#{!userSession.userLoggedIn}" </h:outputText></p>
+</div>
+    <h:form class="mytext" rendered="#{userSession.userLoggedIn}" >
+        <h:panelGrid columns="2"  >
+            <h:outputLabel value="Do you want to logout?" for="logout"  </h:outputLabel>
+            <p:commandButton value="Logout" id="logout" action="#{userSession.logout}" />                                      
+        </h:panelGrid>
+    </h:form>
