@@ -107,6 +107,7 @@ public class HelloUser {
     }
     
     public Boolean addFollowing(HelloUser user){
+        
         try {
             if(!this.following.contains(user)){
             this.following.add(user);

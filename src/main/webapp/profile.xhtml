@@ -5,107 +5,106 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Profile</title>
+        <title>#{msg['profile.jsf']}</title>
     </h:head>
     <h:body>
-    
-          <p:layoutUnit position="north"  >
-                      <p:panel>
-                       <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{userBean.setSelectedUser().name}
+
+        <p:layoutUnit position="north"  >
+            <p:panel>
+                <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{userBean.setSelectedUser().name}
                     <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
                 </h:outputLink>
-                  
-                  
-                       <p:commandButton value="Home" action="faces/timeline.xhtml"  style="width: 200px;"/> 
-                    
-                        <p:commandButton value="Profile" action="#{userBean.profilePage()}" style="width: 200px;">
-                            <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
-                        </p:commandButton>
-                       <p:commandButton value="Logout" action="faces/logout.xhtml" style="width: 200px;">
-                            
-                        </p:commandButton>
-                    </p:panel>
-<!--              <h:panelGroup id="doBtnPG">
-                <p:commandButton value="Edit profile" rendered="#{editBean.showEdit}" 
-                    action="#{editBean.replaceFields()}" update="doBtnPG"/>
-    
-</h:panelGroup>-->
-              
- </p:layoutUnit>
 
-    <f:metadata>
-        <f:viewParam name="usernameprofile" value="#{userBean.usernameProfile}" required="false"/>
-        <!--<f:viewParam name="usernameprofile" value="##{editBean.usernameProfile}" required="false"/>-->
-        <f:event type="preRenderComponent" listener="#{userBean.loadUserForProfile()}"/>
-        <!--<f:event type="preRenderComponent" listener="#{editBean.loadUserForProfile()}"/>-->
-    </f:metadata>
+
+                <p:commandButton value="#{msg['home.jsf']}" action="faces/timeline.xhtml"  style="width: 200px;"/> 
+
+                <p:commandButton value="#{msg['profile.jsf']}" action="#{userBean.profilePage()}" style="width: 200px;">
+                    <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
+                </p:commandButton>
+                <p:commandButton value="#{msg['logout.jsf']}" action="faces/logout.xhtml" style="width: 200px;">
+
+                </p:commandButton>
+            </p:panel>
+            <!--              <h:panelGroup id="doBtnPG">
+                            <p:commandButton value="Edit profile" rendered="#{editBean.showEdit}" 
+                                action="#{editBean.replaceFields()}" update="doBtnPG"/>
+                
+            </h:panelGroup>-->
+
+        </p:layoutUnit>
+
+        <f:metadata>
+            <f:viewParam name="usernameprofile" value="#{userBean.usernameProfile}" required="false"/>
+            <f:event type="preRenderComponent" listener="#{userBean.loadUserForProfile()}"/>
+
+        </f:metadata>
         <br />
-            <p:button  value="Timeline" href="index.xhtml" />
-        
-        <p:panel header="Profile" style="width: 400px;"> 
+        <p:button  value="#{msg['timeline.jsf']}" href="timeline.xhtml" />
+
+        <p:panel header="#{msg['profile.jsf']}" style="width: 400px;"> 
             <p:panelGrid columns="2">
-            <f:facet name="header">
-                <p:graphicImage style="max-height: 300px; max-width: 300px; " name="images/#{userBean.userProfile.profilePic}" />
-            </f:facet>
+                <f:facet name="header">
+                    <p:graphicImage style="max-height: 300px; max-width: 300px; " name="images/#{userBean.userProfile.profilePic}" />
+                </f:facet>
 
-            <h:outputText value="Name: " />
-            <h:outputText value="#{userBean.userProfile.name}" />
+                <h:outputText value="#{msg['name.jsf']} " />
+                <h:outputText value="#{userBean.userProfile.name}" />
 
-            <h:outputText value="Bio: " />
-            <h:outputText value="#{userBean.userProfile.bio}" />
+                <h:outputText value="#{msg['bio.jsf']} " />
+                <h:outputText value="#{userBean.userProfile.bio}" />
 
-            <h:outputText value="Email: " />
-            <h:outputText value="#{userBean.userProfile.email}" />
+                <h:outputText value="#{msg['email.jsf']} " />
+                <h:outputText value="#{userBean.userProfile.email}" />
 
-            <h:outputText value="Followers" />
-            <h:outputText value="#{userBean.userProfile.followers.size()}" />
+                <h:outputText value="#{msg['followers.jsf']}" />
+                <h:outputText value="#{userBean.userProfile.followers.size()}" />
 
-            <h:outputText value="Following" />
-            <h:outputText value="#{userBean.userProfile.following.size()}" />
-        </p:panelGrid>
+                <h:outputText value="#{msg['following.jsf']}" />
+                <h:outputText value="#{userBean.userProfile.following.size()}" />
+            </p:panelGrid>
         </p:panel>
-            
+
         <p:spacer height="30px;"/>
-        
-      <p:outputLabel value="Eigen Tweets"></p:outputLabel>
+
+        <p:outputLabel value="#{msg['yourTweets.jsf']}"></p:outputLabel>
         <h:form> 
             <p:dataTable var="tweet" value="#{userBean.userProfile.tweets}">
-            <p:column headerText="Tweet">
-                <h:outputText value="#{tweet.message}" />
-            </p:column>
-                <p:column headerText="Tijd">
+                <p:column headerText="Tweet">
+                    <h:outputText value="#{tweet.message}" />
+                </p:column>
+                <p:column headerText="#{msg['time.jsf']}">
                     <h:outputText value="#{tweet.time}" />
                 </p:column>
-                  <p:column headerText="Tweeter">
-                      <h:outputText value="#{tweet.tweeter.name}" />
+                <p:column headerText="Tweeter">
+                    <h:outputText value="#{tweet.tweeter.name}" />
                 </p:column>
-            
-        </p:dataTable>
+
+            </p:dataTable>
             <p:spacer height="30px;"/>
-            <p:outputLabel value="Following"></p:outputLabel>
-        <p:dataTable var="following" value="#{userBean.userProfile.following}">
-            <p:column headerText="Tweeter">
-                <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{following.name}
-                    <f:param name="usernameprofile" value="#{following.name}"/>
-                </h:outputLink>
-            </p:column>
-                <p:column headerText="Email">
+            <p:outputLabel value="#{msg['following.jsf']}"></p:outputLabel>
+            <p:dataTable var="following" value="#{userBean.userProfile.following}">
+                <p:column headerText="Tweeter">
+                    <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{following.name}
+                        <f:param name="usernameprofile" value="#{following.name}"/>
+                    </h:outputLink>
+                </p:column>
+                <p:column headerText="#{msg['email.jsf']}">
                     <h:outputText value="#{following.email}" />
                 </p:column>
-            
-        </p:dataTable>
+
+            </p:dataTable>
         </h:form>
 
     </h:body>
     <script type="text/javascript">
-      function toggle(id) {
-        var element = document.getElementById(id);
-        if(element.style.display == 'block') {
-          element.style.display = 'none';
-        } else {
-          element.style.display = 'block'
+        function toggle(id) {
+            var element = document.getElementById(id);
+            if (element.style.display == 'block') {
+                element.style.display = 'none';
+            } else {
+                element.style.display = 'block'
+            }
         }
-      }
     </script>
 </html>
 

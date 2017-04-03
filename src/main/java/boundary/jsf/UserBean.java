@@ -111,8 +111,7 @@ public class UserBean implements Serializable {
     }
 
     public List<Tweet> getTimelineTweets() {
-
-        setTimelineTweets();
+        //setTimelineTweets();
         return timelineTweets;
     }
 
@@ -156,45 +155,26 @@ public class UserBean implements Serializable {
         return timelineTweets;
     }
     
-    public List<Tweet> setTimelineTweets(){
-        timelineTweets.clear();
-        setSelectedUser();
+    public List<Tweet> setTimelineTweets(){ 
+        timelineTweets = new ArrayList<>();
         List<HelloUser> allUsersTimeline = new ArrayList<HelloUser>();
         allUsersTimeline = user.getFollowing();
-        allUsersTimeline.add(user);
+        
+        if (!(allUsersTimeline.contains(user))){
+            allUsersTimeline.add(user);
+        }
+        
         for (HelloUser u : allUsersTimeline){    
             List<Tweet> tweets = u.getTweets();
+           
             for (Tweet t : tweets){
                 timelineTweets.add(t);
+                
             }
         }
+        
         return timelineTweets;
-        //timelineTweets = userService.getTimelineTweets(setSelectedUser().getId().toString());
-//        try {
-//            this.users.clear();
-//            this.users.addAll(userService.allUsers());
-//                for (Iterator<HelloUser> iterator = users.iterator(); iterator.hasNext();) {
-//                    HelloUser nextUser = iterator.next();
-//                    System.out.println(nextUser.getName());
-//                    for (Iterator<Tweet> iterator2 = nextUser.getTweets().iterator(); iterator2.hasNext();){
-//                        Tweet nextTweet = iterator2.next();
-//                         System.out.println(nextTweet.getMessage());
-//                        followingTweets.add(nextTweet);
-//                    }
-//
-//                }
-//            } catch (Exception e) {
-//                
-//            }
-//        return null;
     }
-    
-//    public String refreshTimeline(){
-//        this.timelineTweets.clear();
-//        setTimelineTweets();
-//        return "";
-//    }
-//    
     /**
      * @return the selectedUser
      */
@@ -220,9 +200,14 @@ public class UserBean implements Serializable {
     }
     
     public void newTweet(String message){
+       try {
         Tweet tweet = new Tweet(message, new Date(), user);
+        userProfile.addTweet(tweet);
         userService.addTweet(user, tweet);
         setTimelineTweets();
+       }catch(Exception ex){
+           System.out.println(ex.getMessage());
+       }
         
     }
     
