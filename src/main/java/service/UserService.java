@@ -10,6 +10,7 @@ import dao.UserDao;
 import domain.Tweet;
 import domain.HelloUser;
 import java.util.List;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -18,6 +19,7 @@ import javax.inject.Inject;
  * @author 878550
  */
 @Stateless
+@LocalBean
 public class UserService {
 
     @Inject

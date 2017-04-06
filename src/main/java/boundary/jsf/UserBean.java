@@ -49,7 +49,7 @@ public class UserBean implements Serializable {
     private TweetService tweetService;
     @Inject
     private UserService userService;
-    
+      private List<HelloUser> users;
     private boolean showEdit;
     
     

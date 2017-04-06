@@ -8,6 +8,7 @@ package boundary.rest;
 import domain.Tweet;
 import domain.HelloUser;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,7 +38,9 @@ public class TweetResource {
     @GET
     @Path("all")
     public List<Tweet> allTweets(){
-        return cs.allTweets();
+        List<Tweet> tweets = new ArrayList<>();
+        tweets = cs.allTweets();
+        return tweets;
     }
     
     @GET

@@ -6,6 +6,8 @@
 package dao;
 import domain.Tweet;
 import domain.HelloUser;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -47,7 +49,14 @@ public class TweetDao {
 
    // @Override
     public List<Tweet> FindAll() {
-       return em.createNamedQuery("Tweet.all").getResultList();
+        List<Tweet> test = new  ArrayList<>();
+         try{
+             test = em.createNamedQuery("Tweet.all").getResultList();
+         }catch(Exception ex){
+             System.out.println(ex.getMessage());
+         }
+         
+       return test;
     }
 
    // @Override
