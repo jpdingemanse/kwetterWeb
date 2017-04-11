@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Timeline</title>
+    </h:head>
+    <h:body>
+        Huidige gebruiker 
+        <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{userBean.setSelectedUser().name}
+                    <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
+                </h:outputLink>
+        <h:form> 
+            
+            <br></br>
+            <h:inputText binding="#{newtweet}" value = "What is happening?" />
+            <h:commandButton value="Tweet" action="#{userBean.newTweet(newtweet.value)}" />
+             <br></br>
+             <h:inputText binding="#{search}" value = "Search" />
+             <h:commandButton value="Search" action="#{userBean.search(search.value)}" />
+             <br></br>
+             
+             TIMELINE
+         <p:dataTable var="tweets" value="#{userBean.timelineTweets}">
+            <p:column headerText="Tweet">
+                <h:outputText value="#{tweets.message}" />
+            </p:column>
+                <p:column headerText="Time">
+                    <h:outputText value="#{tweets.time}" />
+                </p:column>
+            <p:column headerText="Tweeter">
+                <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{tweets.tweeter.name}
+                    <f:param name="usernameProfile" value="#{tweets.tweeter.name}"/>
+                </h:outputLink>
+            </p:column>
+        </p:dataTable>
+        </h:form>
+
+    </h:body>
+</html>
+

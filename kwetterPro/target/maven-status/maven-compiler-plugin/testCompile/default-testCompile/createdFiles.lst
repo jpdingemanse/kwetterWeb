@@ -1,0 +1,9 @@
+rest\TweetTestIT.class
+rest\UserTestIT.class
+service\TweetTest.class
+service\UserTest.class
+domain\TweetTest.class
+service\RoleTest.class
+dao\UserTest.class
+domain\UserTest.class
+dao\TweetTest.class

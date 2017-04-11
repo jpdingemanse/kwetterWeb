@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>#{msg['timeline.jsf']}</title>
+            </f:facet>
+
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">               
+
+                <p:layoutUnit position="north" >
+                      
+                       <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{userBean.setSelectedUser().name}
+                    <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
+                </h:outputLink>
+                  
+                  
+                       <p:commandButton value="#{msg['home.jsf']}" action="faces/timeline.xhtml"  style="width: 200px;"/> 
+                    
+                        <p:commandButton value="#{msg['profile.jsf']}" action="#{userBean.profilePage()}" style="width: 200px;">
+                            <f:param name="usernameprofile" value="#{userBean.setSelectedUser().name}"/>
+                        </p:commandButton>
+                       <p:commandButton value="#{msg['logout.jsf']}" action="logout.xhtml" style="width: 200px;">
+                            
+                        </p:commandButton>          
+             <p:inputText binding="#{search}" placeholder="Search" style="margin-top: 3px;"/>
+             <p:commandButton value="#{msg['search.jsf']}" action="#{userBean.search(search.value)}" />
+             <h:form>
+             Language :
+		<h:selectOneMenu value="#{language.localeCode}" onchange="submit()"
+			valueChangeListener="#{language.countryLocaleCodeChanged}">
+   			<f:selectItems value="#{language.countriesInMap}" />
+   		</h:selectOneMenu>
+             </h:form>   
+ </p:layoutUnit>
+                 <p:layoutUnit position="center">
+                    <h:panelGrid columns="4" width="100%;">
+                        <p:panel style="width: 900px; border: hidden;"></p:panel>
+                    </h:panelGrid>
+                    <h:panelGrid columns="3" width="100%;">
+                        <p:panel id="Newtweets" header="#{msg['newTweets.jsf']}" style="height: 350px; width: 1000px;">
+                            <h3 style="margin-left: 100px;">#{msg['whathappening.jsf']}</h3>
+                            
+                            <h:form>
+                                <p:inputText  maxlength="140" binding="#{newtweet}"  placeholder="#{msg['whathappening.jsf']}" style="margin-left: 100px;" />
+                                <p:commandButton  value="Tweet" action="#{userBean.newTweet(newtweet.value)}" update="tweetinfo tweetsTimeline" style="margin-left: 770px;"/>
+                            </h:form>
+                        </p:panel>
+                        <p:panel id="tweetinfo" header="#{msg['tweetInfo.jsf']}"  style="height: 350px; width: 600px;">
+                            <h:panelGrid columns="2" width="100%;">
+                                <p:panel style="border: hidden; height: 30px;">
+                                    <h4>#{msg['yourTweets.jsf']} #{userBean.timelineTweets.size()-2}</h4>
+                                </p:panel>
+                            </h:panelGrid>
+
+                              
+                            <h:panelGrid columns="2" width="100%;" style="margin-top: 20px;">
+                                <p:panel style="border: hidden; height: 30px;">
+                                    <h5>#{msg['following.jsf']} #{userBean.user.following.size()}</h5>
+                                </p:panel>
+                                <p:panel style="border: hidden; height: 30px;">
+                                    <h5>#{msg['follower.jsf']} #{userBean.user.getFollowers().size()}</h5>
+                                </p:panel>
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:panelGrid>
+                    <h:panelGrid columns="3" width="100%;">
+                        <p:panel id="tweetsTimeline" header="Timeline" style="height: 500px; width: 1000px;">
+                            
+                                    <h:form>
+                                        <p:dataTable var="tweets" value="#{userBean.timelineTweets}">
+            <p:column headerText="Tweet">
+                <h:outputText value="#{tweets.message}" />
+            </p:column>
+                <p:column headerText="#{msg['time.jsf']}">
+                    <h:outputText value="#{tweets.time}" />
+                </p:column>
+            <p:column headerText="Tweeter">
+                <h:outputLink class="btn btn-primary" value ="faces/profile.xhtml">#{tweets.tweeter.name}
+                    <f:param name="usernameprofile" value="#{tweets.tweeter.name}"/>
+                </h:outputLink>
+            </p:column>
+        </p:dataTable>
+                        
+                                    </h:form>
+                                
+                                
+
+                        </p:panel>
+                                            </h:panelGrid>
+
+                </p:layoutUnit>
+
+            </p:layout>
+
+        </h:body>
+</html>
